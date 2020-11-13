@@ -129,8 +129,10 @@ street.addListener("pano_changed", () => {
 
 ## Problems
 
-1. How to recognize the latitude and longitude of certain position in the image?
-   As you can see, I already provided a solution to solve the label issue. Once you label the street view, the marker will be marked on the regular map simultaneously. However, the labels' positions didn't meet our expectations as they are replaced in the same location. The reason why this happens is that we keep saving the same latitude and longitude to our markers. So, the biggest problem we face is that how to identify the approximate latitude and longitude of that certain position in the image.
+1. How to recognize the latitude and longitude of a certain position in the image?
+
+As you can see, I already provided a solution to solve the label issue. Once you label the street view, the marker will be marked on the regular map simultaneously. However, the labels' positions didn't meet our expectations as they are replaced in the same location. The reason why this happens is that we keep saving the same latitude and longitude to our markers. So, the biggest problem we face is how to identify the approximate latitude and longitude of that certain position in the image.
 
 2. How to "fix" the label in the 3D street view?
-   The basic idea to realize this effect is finding the relationship between the coordinate(x and y) and the information offered by the map, like pitch, heading, zoom, and so on.
+
+The basic idea to realize this effect is finding the relationship between the coordinate(x and y) and the information offered by the map, like pitch, heading, zoom, and so on.
