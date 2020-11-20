@@ -1,7 +1,8 @@
 import React from "react";
 import OriginalMap from "../../components/OriginalMap";
 import { v4 as uuidV4 } from "uuid";
-import { generateBorderStyle, colors } from "./utils/labelTools";
+import { debounce, isEqual } from "./utils";
+import { generateBorderStyle, colors, resetLabels } from "./utils/labelTools";
 
 const mapOptions = {
 	center: {
@@ -41,10 +42,30 @@ const StreetView = () => {
 	const [labels, setLabels] = React.useState([]);
 	const [markers, setMarkers] = React.useState([]);
 	const locationInfo = React.useRef(defaultInfo);
+	const size = React.useRef(0);
 
 	const onPositionChanged = (e, map) => {
 		locationInfo.current = e;
 		map.setCenter(locationInfo.current.position);
+	};
+
+	const replaceLabels = () => {
+		if (
+			labels.length === size.current &&
+			size.current !== 0 &&
+			!isEqual(labels[0].pov, locationInfo.current.pov)
+		) {
+			const result = resetLabels(labels, locationInfo.current);
+			if (result) {
+				setLabels(result);
+			}
+		}
+	};
+	const replaceLabelsWithDebounce = debounce(replaceLabels, 400);
+
+	const onPovChanged = (e) => {
+		locationInfo.current = e;
+		replaceLabelsWithDebounce();
 	};
 
 	const handleStreetViewClick = (e) => {
@@ -61,6 +82,7 @@ const StreetView = () => {
 					pov: locationInfo.current.pov,
 				},
 			]);
+			size.current++;
 			setMarkers([
 				...markers,
 				{
@@ -92,7 +114,7 @@ const StreetView = () => {
 				mainStyle={generateBorderStyle(labelColor)}
 				streetViewOptions={streetViewOptions}
 				mapOptions={mapOptions}
-				events={{ onPositionChanged }}
+				events={{ onPositionChanged, onPovChanged }}
 				markers={markers}
 				labels={labels}
 				labelMode={labelMode}
